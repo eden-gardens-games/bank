@@ -121,49 +121,56 @@ const AdminPage = () => {
       </AppBar>
 
       {/* Filters Section */}
-      <div className="p-4 flex flex-wrap gap-4 bg-yellow-400 text-blue-900">
-        <FormControl variant="outlined" size="small">
-          <TextField 
-            label="Year" 
-            value={filterYear} 
-            onChange={(e) => setFilterYear(e.target.value)} 
-            type="number"
-          />
-        </FormControl>
-        <FormControl variant="outlined" size="small">
-          <InputLabel>Loan Status</InputLabel>
-          <Select
-            label="Loan Status"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            style={{ minWidth: 120 }}
-          >
-            <MenuItem value=""><em>None</em></MenuItem>
-            <MenuItem value="Approved">Approved</MenuItem>
-            <MenuItem value="Progress">Progress</MenuItem>
-            <MenuItem value="Closed">Closed</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl variant="outlined" size="small">
-          <TextField 
-            label="Loan Extension (months)" 
-            value={filterExtension} 
-            onChange={(e) => setFilterExtension(e.target.value)} 
-            type="number"
-          />
-        </FormControl>
-        <FormControl variant="outlined" size="small">
-          <TextField 
-            label="Loan Foreclosure (months)" 
-            value={filterForeclosure} 
-            onChange={(e) => setFilterForeclosure(e.target.value)} 
-            type="number"
-          />
-        </FormControl>
-      </div>
+     <div className="p-4 flex flex-wrap gap-4 bg-yellow-400 text-white">
+	  <FormControl variant="outlined" size="small" style={{ minWidth: 180, height: 40 }}>
+		<TextField 
+		  label="Year" 
+		  value={filterYear} 
+		  onChange={(e) => setFilterYear(e.target.value)} 
+		  type="number"
+		  sx={{ height: 40 }} // Fix height
+		/>
+	  </FormControl>
+	  
+	  <FormControl variant="outlined" size="small" style={{ minWidth: 180, height: 40 }}>
+		<InputLabel>Loan Status</InputLabel>
+		<Select
+		  label="Loan Status"
+		  value={filterStatus}
+		  onChange={(e) => setFilterStatus(e.target.value)}
+		  sx={{ height: 40 }} // Fix height
+		>
+		  <MenuItem value=""><em>None</em></MenuItem>
+		  <MenuItem value="Approved">Approved</MenuItem>
+		  <MenuItem value="Progress">Progress</MenuItem>
+		  <MenuItem value="Closed">Closed</MenuItem>
+		</Select>
+	  </FormControl>
+
+	  <FormControl variant="outlined" size="small" style={{ minWidth: 180, height: 40 }}>
+		<TextField 
+		  label="Loan Extension (months)" 
+		  value={filterExtension} 
+		  onChange={(e) => setFilterExtension(e.target.value)} 
+		  type="number"
+		  sx={{ height: 40 }} // Fix height
+		/>
+	  </FormControl>
+
+	  <FormControl variant="outlined" size="small" style={{ minWidth: 180, height: 40 }}>
+		<TextField 
+		  label="Loan Foreclosure (months)" 
+		  value={filterForeclosure} 
+		  onChange={(e) => setFilterForeclosure(e.target.value)} 
+		  type="number"
+		  sx={{ height: 40 }} // Fix height
+		/>
+	  </FormControl>
+	</div>
+
 
       {/* Loans Table */}
-      <div className="p-4">
+      <div className="p-4 text-white">
         <Paper className="overflow-auto">
           <TableContainer style={{ maxHeight: '70vh' }}>
             <Table stickyHeader>
