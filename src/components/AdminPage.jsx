@@ -128,12 +128,7 @@ const AdminPage = () => {
 		  value={filterYear} 
 		  onChange={(e) => setFilterYear(e.target.value)} 
 		  type="number"
-		  sx={{
-			color: "white",
-			"& .MuiInputBase-input": { color: "white" }, // Ensures text inside the input is white
-			"& .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, // Makes border white
-			"& .MuiInputLabel-root": { color: "white" } // Makes label white
-		  }}
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 	  
@@ -143,12 +138,7 @@ const AdminPage = () => {
 		  label="Loan Status"
 		  value={filterStatus}
 		  onChange={(e) => setFilterStatus(e.target.value)}
-		  sx={{
-			color: "white",
-			"& .MuiInputBase-input": { color: "white" }, // Ensures text inside the input is white
-			"& .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, // Makes border white
-			"& .MuiInputLabel-root": { color: "white" } // Makes label white
-		  }}
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		>
 		  <MenuItem value=""><em>None</em></MenuItem>
 		  <MenuItem value="Approved">Approved</MenuItem>
@@ -163,12 +153,7 @@ const AdminPage = () => {
 		  value={filterExtension} 
 		  onChange={(e) => setFilterExtension(e.target.value)} 
 		  type="number"
-		  sx={{
-			color: "white",
-			"& .MuiInputBase-input": { color: "white" }, // Ensures text inside the input is white
-			"& .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, // Makes border white
-			"& .MuiInputLabel-root": { color: "white" } // Makes label white
-		  }} 
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 
@@ -178,12 +163,7 @@ const AdminPage = () => {
 		  value={filterForeclosure} 
 		  onChange={(e) => setFilterForeclosure(e.target.value)} 
 		  type="number"
-		  sx={{
-			color: "white",
-			"& .MuiInputBase-input": { color: "white" }, // Ensures text inside the input is white
-			"& .MuiOutlinedInput-notchedOutline": { borderColor: "white" }, // Makes border white
-			"& .MuiInputLabel-root": { color: "white" } // Makes label white
-		  }} 
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 	</div>

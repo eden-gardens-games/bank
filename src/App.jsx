@@ -1,5 +1,5 @@
 import Auth from "./components/Auth";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import AdminPage from "./components/AdminPage";
 import Dashboard from "./components/Dashboard";
 
