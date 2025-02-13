@@ -9,6 +9,7 @@ const referralCode = "BANK123"; // Change this to your known referral code
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -72,7 +73,6 @@ export default function Auth() {
         await signInWithEmailAndPassword(auth, formData.email, formData.password);
         alert("Sign in successful!");
 		if (formData.email === "admin@wiseman.com") {
-			console.log("Here");
 		  navigate("/bankAdmin"); // Redirect to Admin Page
 		} else {
 		  navigate("/bankDashboard"); // Redirect to Common User Page
