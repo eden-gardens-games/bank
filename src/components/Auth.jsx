@@ -72,9 +72,10 @@ export default function Auth() {
         await signInWithEmailAndPassword(auth, formData.email, formData.password);
         alert("Sign in successful!");
 		if (formData.email === "admin@wiseman.com") {
-		  navigate("/bank/admin"); // Redirect to Admin Page
+			console.log("Here");
+		  navigate("/bankAdmin"); // Redirect to Admin Page
 		} else {
-		  navigate("/bank/dashboard"); // Redirect to Common User Page
+		  navigate("/bankDashboard"); // Redirect to Common User Page
 		}
       } catch (err) {
         setError("Invalid email or password.");

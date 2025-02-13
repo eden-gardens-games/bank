@@ -8,8 +8,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/bank" element={<Auth />} />
-        <Route path="/bank/admin" element={<AdminPage />} />
-        <Route path="/bank/dashboard" element={<Dashboard />} />
+        <Route path="/bankAdmin" element={<AdminPage />} />
+        <Route path="/bankDashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
