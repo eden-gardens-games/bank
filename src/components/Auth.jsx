@@ -3,6 +3,7 @@ import { auth, db } from "../firebase";
 import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { TextField, Button, Container, Typography, Card, CardContent } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const referralCode = "BANK123"; // Change this to your known referral code
 
@@ -70,6 +71,11 @@ export default function Auth() {
       try {
         await signInWithEmailAndPassword(auth, formData.email, formData.password);
         alert("Sign in successful!");
+		if (formData.email === "admin@wiseman.com") {
+		  navigate("/admin"); // Redirect to Admin Page
+		} else {
+		  navigate("/dashboard"); // Redirect to Common User Page
+		}
       } catch (err) {
         setError("Invalid email or password.");
       }
