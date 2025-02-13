@@ -107,7 +107,7 @@ const AdminPage = () => {
       <AppBar position="static" className="bg-blue-900">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Admin Dashboard
+            Adin Dashboard
           </Typography>
           <Typography 
             variant="body1" 
