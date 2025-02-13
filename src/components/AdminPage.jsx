@@ -107,7 +107,7 @@ const AdminPage = () => {
       <AppBar position="static" className="bg-blue-900">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Ain Dashboard
+            Admin Dashboard
           </Typography>
           <Typography 
             variant="body1" 
@@ -122,13 +122,13 @@ const AdminPage = () => {
 
       {/* Filters Section */}
      <div className="p-4 flex flex-wrap gap-4 bg-yellow-400 text-white">
-	  <FormControl variant="outlined" size="small" style={{ minWidth: 180, height: 40 }}>
+	  <FormControl variant="outlined" size="small" style={{ minWidth: 220}}>
 		<TextField 
 		  label="Year" 
 		  value={filterYear} 
 		  onChange={(e) => setFilterYear(e.target.value)} 
 		  type="number"
-		  sx={{ height: 40 }} // Fix height
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 	  
@@ -138,7 +138,7 @@ const AdminPage = () => {
 		  label="Loan Status"
 		  value={filterStatus}
 		  onChange={(e) => setFilterStatus(e.target.value)}
-		  sx={{ height: 40 }} // Fix height
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		>
 		  <MenuItem value=""><em>None</em></MenuItem>
 		  <MenuItem value="Approved">Approved</MenuItem>
@@ -153,7 +153,7 @@ const AdminPage = () => {
 		  value={filterExtension} 
 		  onChange={(e) => setFilterExtension(e.target.value)} 
 		  type="number"
-		  sx={{ height: 40 }} // Fix height
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 
@@ -163,7 +163,7 @@ const AdminPage = () => {
 		  value={filterForeclosure} 
 		  onChange={(e) => setFilterForeclosure(e.target.value)} 
 		  type="number"
-		  sx={{ height: 40 }} // Fix height
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 	</div>
