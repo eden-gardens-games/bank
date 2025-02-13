@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { TextField, Button, Container, Typography, Card, CardContent } from "@mui/material";
 
 const referralCode = "BANK123"; // Change this to your known referral code
@@ -47,8 +49,20 @@ export default function Auth() {
       }
 
       try {
-        await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+		const user = userCredential.user;
         alert("Sign up successful!");
+		const userDocRef = doc(db, "bank", user.uid);
+		await setDoc(userDocRef, {
+			firstName : formData.firstName,
+			lastName : formData.lastName,
+			emailId : formData.email,
+			loans : []
+		});
+		const usersListRef = doc(db, "bank", "Admin");
+		await updateDoc(usersListRef, {
+			userList: arrayUnion(user.uid)  // Adds email to an array field
+		});
       } catch (err) {
         setError(err.message);
       }
@@ -77,7 +91,7 @@ export default function Auth() {
                 <TextField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} required fullWidth />
               </>
             )}
-            <TextField label="Email" type="email" name="email" value={formData.email} onChange={handleChange} required fullWidth />
+            <TextField label="Email Address" type="email" name="email" value={formData.email} onChange={handleChange} required fullWidth />
             <TextField label="Password" type="password" name="password" value={formData.password} onChange={handleChange} required fullWidth />
             {isSignUp && (
               <>
