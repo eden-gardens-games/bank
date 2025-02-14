@@ -5,13 +5,11 @@ import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
-    <Router basename="/bank">
+    <Router>
       <Routes>
-        {/* You can render Auth at the root */}
         <Route path="/" element={<Auth />} />
         <Route path="/bankAdmin" element={<AdminPage />} />
         <Route path="/bankDashboard" element={<Dashboard />} />
-        {/* Optional catch-all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
