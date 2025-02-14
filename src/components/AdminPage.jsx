@@ -130,7 +130,7 @@ const AdminPage = () => {
 
       {/* Filters Section */}
 	  {filtersOpen && (
-     <div className="min-h-[200px] p-6 flex flex-col md:flex-row gap-4 bg-yellow-400 text-white">
+     <div className="min-h-[100px] p-6 flex flex-col md:flex-row gap-4 bg-yellow-400 text-white">
 	  <FormControl variant="outlined" size="small" style={{ minWidth: 220}}>
 		<TextField 
 		  label="Year" 
