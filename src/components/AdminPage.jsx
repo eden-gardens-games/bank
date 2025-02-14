@@ -106,7 +106,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-blue-900 text-white">
+    <div className="min-h-screen w-full bg-blue-900 text-white">
       {/* Top Bar */}
       <AppBar position="static" className="bg-blue-900">
         <Toolbar>
@@ -250,7 +250,7 @@ const AdminPage = () => {
                       backgroundColor: '#1E3A8A',
 					  color: 'white',
                       position: 'sticky', 
-                      left: '16px', 
+                      left: 0, 
                       zIndex: 2 
                     }}
                   >
