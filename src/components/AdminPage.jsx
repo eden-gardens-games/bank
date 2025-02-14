@@ -113,8 +113,8 @@ const AdminPage = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Admin Dashboard
           </Typography>
-		  <Typography variant="body2" className="curson-pointer mr-4" onClick={() => setFiltersOpen(!filtersOpen)}>
-			{filtersOpen ? "Hide Filters" : "Show Filters"}
+		  <Typography variant="body1" className="curson-pointer mr-4" onClick={() => setFiltersOpen(!filtersOpen)}>
+			{filtersOpen ? "Hide Filters" : "Show Filters"}  |  
 		  </Typography>
           <Typography 
             variant="body1" 
