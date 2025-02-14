@@ -129,7 +129,12 @@ const AdminPage = () => {
 		  onChange={(e) => setFilterYear(e.target.value)} 
 		  type="number"
 		  InputLabelProps={{
-			sx: { transform: 'translate(14px, 10px) scale(1)' }  // adjust these values as needed
+			sx: {
+			  // Apply this transform only when the label is not shrunk (i.e., initial state)
+			  '&:not(.MuiInputLabel-shrink)': {
+				transform: 'translate(14px, 10px) scale(1)',
+			  },
+			},
 		  }}
 		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
@@ -157,7 +162,12 @@ const AdminPage = () => {
 		  onChange={(e) => setFilterExtension(e.target.value)} 
 		  type="number"
 		  InputLabelProps={{
-			sx: { transform: 'translate(24px, 10px) scale(1)' }  // adjust these values as needed
+			sx: {
+			  // Apply this transform only when the label is not shrunk (i.e., initial state)
+			  '&:not(.MuiInputLabel-shrink)': {
+				transform: 'translate(14px, 10px) scale(1)',
+			  },
+			},
 		  }}
 		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
@@ -169,6 +179,14 @@ const AdminPage = () => {
 		  value={filterForeclosure} 
 		  onChange={(e) => setFilterForeclosure(e.target.value)} 
 		  type="number"
+		  InputLabelProps={{
+			sx: {
+			  // Apply this transform only when the label is not shrunk (i.e., initial state)
+			  '&:not(.MuiInputLabel-shrink)': {
+				transform: 'translate(14px, 10px) scale(1)',
+			  },
+			},
+		  }}
 		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
