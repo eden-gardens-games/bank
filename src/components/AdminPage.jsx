@@ -114,7 +114,7 @@ const AdminPage = () => {
             className="cursor-pointer mr-4"
             onClick={handleUpdateRecords}
           >
-            Update Records
+            Update Records   |
           </Typography>
           <Button color="inherit" onClick={handleLogout}>Logout</Button>
         </Toolbar>
@@ -126,7 +126,19 @@ const AdminPage = () => {
 		<TextField 
 		  label="Year" 
 		  value={filterYear} 
-		  onChange={(e) => setFilterYear(e.target.value)} 
+		  onChange={(e) => {
+            const val = e.target.value;
+            // Only validate if value is not empty
+            if (val !== "" && (Number(val) < 1900 || Number(val) > 2200)) {
+              setYearError("Year must be between 1900 and 2200");
+            } else {
+              setYearError("");
+            }
+            setFilterYear(val);
+          }}
+		  error={!!yearError}
+          helperText={yearError}
+          inputProps={{ min: 1900, max: 2200 }}		  
 		  type="number"
 		  InputLabelProps={{
 			sx: {
@@ -159,8 +171,19 @@ const AdminPage = () => {
 		<TextField 
 		  label="Loan Extension (months)" 
 		  value={filterExtension} 
-		  onChange={(e) => setFilterExtension(e.target.value)} 
-		  type="number"
+		  onChange={(e) => {
+            const val = e.target.value;
+            if (val !== "" && Number(val) < 0) {
+              setExtensionError("Value cannot be less than 0");
+            } else {
+              setExtensionError("");
+            }
+            setFilterExtension(val);
+          }} 
+          type="number"
+          error={!!extensionError}
+          helperText={extensionError}
+          inputProps={{ min: 0 }}
 		  InputLabelProps={{
 			sx: {
 			  // Apply this transform only when the label is not shrunk (i.e., initial state)
@@ -177,8 +200,19 @@ const AdminPage = () => {
 		<TextField 
 		  label="Loan Foreclosure (months)" 
 		  value={filterForeclosure} 
-		  onChange={(e) => setFilterForeclosure(e.target.value)} 
-		  type="number"
+		  onChange={(e) => {
+            const val = e.target.value;
+            if (val !== "" && Number(val) < 0) {
+              setForeclosureError("Value cannot be less than 0");
+            } else {
+              setForeclosureError("");
+            }
+            setFilterForeclosure(val);
+          }} 
+          type="number"
+          error={!!foreclosureError}
+          helperText={foreclosureError}
+          inputProps={{ min: 0 }}
 		  InputLabelProps={{
 			sx: {
 			  // Apply this transform only when the label is not shrunk (i.e., initial state)
@@ -203,7 +237,8 @@ const AdminPage = () => {
                   {/* First Column: User Name (sticky) */}
                   <TableCell 
                     style={{ 
-                      backgroundColor: '#1E3A8A', 
+                      backgroundColor: '#1E3A8A',
+					  color: 'white',
                       position: 'sticky', 
                       left: 0, 
                       zIndex: 2 
@@ -211,14 +246,14 @@ const AdminPage = () => {
                   >
                     User Name
                   </TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A' }}>Email ID</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A' }}>Loan Date</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A' }}>Loan Principal</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A' }}>Loan Interest Rate</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A' }}>Loan Duration</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A' }}>Loan Status</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A' }}>Loan Extension</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A' }}>Loan Foreclosure</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Email ID</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Date</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Principal</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Interest Rate</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Duration</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Status</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Extension</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Foreclosure</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
