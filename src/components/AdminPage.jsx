@@ -113,6 +113,9 @@ const AdminPage = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Admin Dashboard
           </Typography>
+		  <Typography variant="body2" className="curson-pointer mr-4" onClick={() => setFiltersOpen(!filtersOpen)}>
+			{filtersOpen ? "Hide Filters" : "Show Filters"}
+		  </Typography>
           <Typography 
             variant="body1" 
             className="cursor-pointer mr-4"
@@ -123,9 +126,7 @@ const AdminPage = () => {
           <Button color="inherit" onClick={handleLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
-	  <Button variant="contained" onClick={() => setFiltersOpen(!filtersOpen)}>
-        {filtersOpen ? "Hide Filters" : "Show Filters"}
-      </Button>
+	  
 
       {/* Filters Section */}
 	  {filtersOpen && (
