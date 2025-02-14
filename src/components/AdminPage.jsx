@@ -250,7 +250,7 @@ const AdminPage = () => {
                       backgroundColor: '#1E3A8A',
 					  color: 'white',
                       position: 'sticky', 
-                      left: 0, 
+                      left: '16px', 
                       zIndex: 2 
                     }}
                   >
