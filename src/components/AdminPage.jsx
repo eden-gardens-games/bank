@@ -15,6 +15,9 @@ const AdminPage = () => {
   const navigate = useNavigate();
 
   // State for loan data
+  const [yearError, setYearError] = useState("");
+  const [extensionError, setExtensionError] = useState("");
+  const [foreclosureError, setForeclosureError] = useState("");
   const [loanData, setLoanData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
 
