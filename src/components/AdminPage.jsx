@@ -128,7 +128,10 @@ const AdminPage = () => {
 		  value={filterYear} 
 		  onChange={(e) => setFilterYear(e.target.value)} 
 		  type="number"
-		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 }, "& input": { padding: "10px 14px", fontSize: "14px" } }} 
+		  InputLabelProps={{
+			sx: { transform: 'translate(14px, 10px) scale(1)' }  // adjust these values as needed
+		  }}
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 	  
@@ -138,7 +141,7 @@ const AdminPage = () => {
 		  label="Loan Status"
 		  value={filterStatus}
 		  onChange={(e) => setFilterStatus(e.target.value)}
-		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 }, "& input": { padding: "10px 14px", fontSize: "14px" }  }} 
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		>
 		  <MenuItem value=""><em>None</em></MenuItem>
 		  <MenuItem value="Approved">Approved</MenuItem>
@@ -153,7 +156,10 @@ const AdminPage = () => {
 		  value={filterExtension} 
 		  onChange={(e) => setFilterExtension(e.target.value)} 
 		  type="number"
-		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 }, "& input": { padding: "10px 14px", fontSize: "14px" }  }} 
+		  InputLabelProps={{
+			sx: { transform: 'translate(24px, 10px) scale(1)' }  // adjust these values as needed
+		  }}
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 
@@ -163,7 +169,7 @@ const AdminPage = () => {
 		  value={filterForeclosure} 
 		  onChange={(e) => setFilterForeclosure(e.target.value)} 
 		  type="number"
-		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 }, "& input": { padding: "10px 14px", fontSize: "14px" }  }} 
+		  sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
 		/>
 	  </FormControl>
 	</div>
