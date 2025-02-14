@@ -15,6 +15,7 @@ const AdminPage = () => {
   const navigate = useNavigate();
 
   // State for loan data
+  const [filtersOpen, setFiltersOpen] = useState(true);
   const [yearError, setYearError] = useState("");
   const [extensionError, setExtensionError] = useState("");
   const [foreclosureError, setForeclosureError] = useState("");
@@ -122,9 +123,13 @@ const AdminPage = () => {
           <Button color="inherit" onClick={handleLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
+	  <Button variant="contained" onClick={() => setFiltersOpen(!filtersOpen)}>
+        {filtersOpen ? "Hide Filters" : "Show Filters"}
+      </Button>
 
       {/* Filters Section */}
-     <div className="p-4 flex flex-wrap gap-4 bg-yellow-400 text-white">
+	  {filtersOpen && (
+     <div className="min-h-[200px] p-6 flex flex-col md:flex-row gap-4 bg-yellow-400 text-white">
 	  <FormControl variant="outlined" size="small" style={{ minWidth: 220}}>
 		<TextField 
 		  label="Year" 
@@ -228,6 +233,7 @@ const AdminPage = () => {
 		/>
 	  </FormControl>
 	</div>
+	)}
 
 
       {/* Loans Table */}
