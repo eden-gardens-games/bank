@@ -32,6 +32,7 @@ function App() {
         <Route path="/" element={<Auth />} />
         <Route path="/bankAdmin" element={<AdminPage />} />
         <Route path="/bankDashboard" element={<Dashboard />} />
+		<Route path="/bankAdminUpdate" element={<AdminUpdate />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
