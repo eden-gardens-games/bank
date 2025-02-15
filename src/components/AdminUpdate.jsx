@@ -6,7 +6,7 @@ import { db, auth } from "../firebase";
 
 // MUI Components
 import { 
-  AppBar, Toolbar, Typography, Button, Paper, 
+  AppBar, Toolbar, Typography, Button, Paper, Box,
   Drawer, IconButton, List, ListItem, ListItemText, Divider,
   FormControl, InputLabel, Select, MenuItem, TextField
 } from '@mui/material';
@@ -288,6 +288,18 @@ const AdminUpdate = () => {
             label="Select Action"
             value={selectedAction}
             onChange={(e) => setSelectedAction(e.target.value)}
+			sx={{
+			  "& .MuiSelect-select": { color: "white" },
+			  "& fieldset": { borderColor: "white" }
+			}}
+			MenuProps={{
+			  PaperProps: {
+				sx: {
+				  bgcolor: 'inherit', // or specify a background, e.g., 'blue'
+				  color: 'white'
+				}
+			  }
+			}}
           >
             <MenuItem value="addUser">Add User</MenuItem>
             <MenuItem value="removeUser">Remove User</MenuItem>
@@ -387,6 +399,7 @@ const AdminUpdate = () => {
                 </Select>
               </FormControl>
             )}
+			<Box sx={{ m: 2 }} />
             <Button variant="contained" color="secondary" fullWidth className="mt-2" onClick={handleRemoveUser}>
               Delete User
             </Button>
