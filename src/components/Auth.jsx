@@ -51,6 +51,7 @@ export default function Auth() {
       }
 
       try {
+		const usersListRef = doc(db, "bank", "Admin");
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
 		const user = userCredential.user;
         alert("Sign up successful!");
@@ -59,9 +60,10 @@ export default function Auth() {
 			firstName : formData.firstName,
 			lastName : formData.lastName,
 			emailId : formData.email,
-			loans : []
+			loans : [],
+			state : "Active"
 		});
-		const usersListRef = doc(db, "bank", "Admin");
+		
 		await updateDoc(usersListRef, {
 			userList: arrayUnion(user.uid)  // Adds email to an array field
 		});

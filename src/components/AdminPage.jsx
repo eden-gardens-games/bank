@@ -54,6 +54,7 @@ const AdminPage = () => {
                 userName: `${data.firstName || ''} ${data.lastName || ''}`,
                 email: data.emailId || '',
                 loanDate: loan.loanDate, // Expecting a date string or timestamp
+				loanId: loan.loanId,
                 loanPrincipal: loan.loanPrincipal,
                 loanInterestRate: loan.loanInterestRate,
                 loanDuration: loan.loanDuration,
@@ -110,6 +111,10 @@ const AdminPage = () => {
   const handleUpdateRecords = () => {
     navigate("/bankAdminUpdate");
   };
+  
+  const handleAdminHome = () => {
+    navigate("/bankAdmin");
+  };
 
   // Toggle Drawer
   const toggleDrawer = (open) => (event) => {
@@ -128,7 +133,11 @@ const AdminPage = () => {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        <ListItem button onClick={handleUpdateRecords}>
+        <ListItem button onClick={handleAdminHome}>
+          <ListItemText primary="Admin Home" />
+        </ListItem>
+        <Divider />
+		<ListItem button onClick={handleUpdateRecords}>
           <ListItemText primary="Update Records" />
         </ListItem>
         <Divider />
@@ -156,7 +165,7 @@ const AdminPage = () => {
             Admin Dashboard
           </Typography>
           <Typography variant="body1" className="cursor-pointer mr-4" onClick={() => setFiltersOpen(!filtersOpen)}>
-            {filtersOpen ? "Hide Filters" : "Show Filters"}   |  
+            {filtersOpen ? "Hide Filters" : "Show Filters"} 
           </Typography>
           {/* Removed Update Records and Logout from top bar */}
         </Toolbar>
@@ -214,6 +223,10 @@ const AdminPage = () => {
               <MenuItem value="Approved">Approved</MenuItem>
               <MenuItem value="Progress">Progress</MenuItem>
               <MenuItem value="Closed">Closed</MenuItem>
+			  <MenuItem value="Progress-Ext">Progress-Ext</MenuItem>
+			  <MenuItem value="Closed-Ext">Closed-Ext</MenuItem>
+			  <MenuItem value="Closed-FC">Closed-FC</MenuItem>
+			  <MenuItem value="Lost">Lost</MenuItem>
             </Select>
           </FormControl>
 
@@ -293,14 +306,12 @@ const AdminPage = () => {
                   >
                     User Name
                   </TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Email ID</TableCell>
+                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan ID</TableCell>
                   <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Date</TableCell>
                   <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Principal</TableCell>
                   <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Interest Rate</TableCell>
                   <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Duration</TableCell>
                   <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Status</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Extension</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Foreclosure</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -315,14 +326,12 @@ const AdminPage = () => {
                     >
                       {loan.userName}
                     </TableCell>
-                    <TableCell>{loan.email}</TableCell>
+                    <TableCell>{loan.loanId}</TableCell>
                     <TableCell>{new Date(loan.loanDate).toLocaleDateString()}</TableCell>
                     <TableCell>{loan.loanPrincipal}</TableCell>
                     <TableCell>{loan.loanInterestRate}</TableCell>
                     <TableCell>{loan.loanDuration}</TableCell>
                     <TableCell>{loan.loanStatus}</TableCell>
-                    <TableCell>{loan.loanExtension}</TableCell>
-                    <TableCell>{loan.loanForeclosure}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
