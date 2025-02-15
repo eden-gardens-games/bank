@@ -283,7 +283,7 @@ const AdminUpdate = () => {
       {/* Action Dropdown */}
       <div className="mx-auto w-full max-w-md my-4">
         <FormControl fullWidth variant="outlined" size="small">
-          <InputLabel>Select Action</InputLabel>
+          <InputLabel sx={{ color: 'white' }}>Select Action</InputLabel>
           <Select
             label="Select Action"
             value={selectedAction}
@@ -295,7 +295,7 @@ const AdminUpdate = () => {
 			MenuProps={{
 			  PaperProps: {
 				sx: {
-				  bgcolor: 'inherit', // or specify a background, e.g., 'blue'
+				  bgcolor: 'blue', // or specify a background, e.g., 'blue'
 				  color: 'white'
 				}
 			  }
