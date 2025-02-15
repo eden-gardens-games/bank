@@ -22,6 +22,11 @@ const AdminUpdate = () => {
     setDrawerOpen(open);
   };
 
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate("/");
+  };
+  
   const drawerContent = (
     <div style={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
       <List>
@@ -58,10 +63,7 @@ const AdminUpdate = () => {
   }, []);
 
   // Logout Handler
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/");
-  };
+  
 
   // Action Dropdown
   const [selectedAction, setSelectedAction] = useState("");
