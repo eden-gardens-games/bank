@@ -93,7 +93,7 @@ const AdminUpdate = () => {
         lastName: addUserData.lastName,
         emailId: addUserData.email,
         loans: [],
-        status: "Active"
+        state: "Active"
       });
       alert("User added successfully!");
     } catch (err) {
@@ -113,7 +113,7 @@ const AdminUpdate = () => {
       const userDataSnap = await getDoc(userDocRef);
       const userData = userDataSnap.data();
       // Update user status to "Deleted"
-      await updateDoc(userDocRef, { status: "Deleted" });
+      await updateDoc(userDocRef, { state: "Deleted" });
       // If user has active loans, handle them:
       const activeLoans = (userData.loans || []).filter(loan => 
         loan.loanStatus === "Progress" || loan.loanStatus === "Progress-Ext" || loan.loanStatus === "Approved"
@@ -212,7 +212,7 @@ const AdminUpdate = () => {
   const [newBankBalance, setNewBankBalance] = useState("");
   const handleUpdateBankBalance = async () => {
     try {
-      const adminDocRef = doc(db, "bank", "admin");
+      const adminDocRef = doc(db, "bank", "Admin");
       await updateDoc(adminDocRef, { balance: newBankBalance });
       alert("Bank balance updated!");
       setBankBalance(newBankBalance);
@@ -232,7 +232,7 @@ const AdminUpdate = () => {
         snapshot.forEach(docSnap => {
           if (docSnap.id !== "admin") {
             const data = docSnap.data();
-            if (data.status === "Active") {
+            if (data.state === "Active") {
               let activeLoansCount = 0;
               if (data.loans && Array.isArray(data.loans)) {
                 data.loans.forEach(loan => {
