@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import Auth from "./components/Auth";
 import AdminPage from "./components/AdminPage";
 import Dashboard from "./components/Dashboard";
+import AdminUpdate from "./components/AdminUpdate";
 
 function BodyClassManager() {
   const location = useLocation();
