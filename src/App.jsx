@@ -1,7 +1,6 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { useNavigate, useLocation } from "react-router-dom";
 import { auth } from "./firebase"; // Ensure you import auth from Firebase config
 import Auth from "./components/Auth";
 import AdminPage from "./components/AdminPage";
@@ -31,49 +30,41 @@ function BodyClassManager() {
 
 function App() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [isAuthChecked, setIsAuthChecked] = useState(false); // Track initial auth check
   const navigate = useNavigate();
-  const location = useLocation();
 
+  // Run this only once when the app loads (not on every navigation)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      setLoading(false); // Set loading to false once the auth state is checked
+      setIsAuthChecked(true); // Mark authentication check as done
 
       if (user) {
-        // Check if there was a page stored in sessionStorage
-        const returnUrl = sessionStorage.getItem("returnUrl");
-        
-        if (returnUrl) {
-          // Navigate back to the page the user was on before
-          sessionStorage.removeItem("returnUrl"); // Clean up session storage
-          navigate(returnUrl);
+        // Retrieve last visited page from sessionStorage
+        const lastPage = sessionStorage.getItem("lastPage");
+
+        if (lastPage) {
+          navigate(lastPage);
         } else {
-          // Default behavior: Redirect to user-specific page (either Admin or User)
-          if (user.email === "admin@wiseman.com") {
-            navigate("/bankAdmin");
-          } else {
-            navigate("/bankDashboard");
-          }
+          navigate(user.email === "admin@wiseman.com" ? "/bankAdmin" : "/bankDashboard");
         }
       } else {
-        // If user is not authenticated, redirect to login page
         navigate("/");
       }
     });
 
     return () => unsubscribe();
-  }, [navigate]);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
+  // Save the last visited page whenever the user navigates
   useEffect(() => {
-    // Before redirecting, store the current URL in sessionStorage
-    if (user === null && location.pathname !== "/") {
-      sessionStorage.setItem("returnUrl", location.pathname);
+    if (user) {
+      sessionStorage.setItem("lastPage", window.location.pathname);
     }
-  }, [location, user]);
+  }, [window.location.pathname, user]);
 
-  if (loading) {
-    return <div>Loading...</div>; // Display loading state while checking auth
+  if (!isAuthChecked) {
+    return <div>Loading...</div>; // Prevent rendering routes until auth check is complete
   }
 
   return (
