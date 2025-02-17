@@ -35,7 +35,6 @@ function App() {
 
   // Run this only once when the app loads (not on every navigation)
   useEffect(() => {
-	console.log("test");
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setIsAuthChecked(true); // Mark authentication check as done
@@ -43,7 +42,7 @@ function App() {
       if (user) {
         // Retrieve last visited page from sessionStorage
         const lastPage = sessionStorage.getItem("lastPage");
-		console.log("here");
+		console.log(lastPage);
 
         if (lastPage) {
           navigate(lastPage);
@@ -51,6 +50,7 @@ function App() {
           navigate(user.email === "admin@wiseman.com" ? "/bankAdmin" : "/bankDashboard");
         }
       } else {
+		console.log("Here");
         navigate("/");
       }
     });
