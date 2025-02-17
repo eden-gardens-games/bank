@@ -2,6 +2,7 @@ import { useState } from "react";
 import { auth, db } from "../firebase";
 import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { TextField, Button, Container, Typography, Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -30,6 +31,8 @@ export default function Auth() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const auth = getAuth();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -51,6 +54,7 @@ export default function Auth() {
       }
 
       try {
+		await setPersistence(auth, browserLocalPersistence);
 		const usersListRef = doc(db, "bank", "Admin");
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
 		const user = userCredential.user;

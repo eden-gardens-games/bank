@@ -1,5 +1,6 @@
-import { HashRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { HashRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Auth from "./components/Auth";
 import AdminPage from "./components/AdminPage";
 import Dashboard from "./components/Dashboard";
@@ -29,7 +30,30 @@ function BodyClassManager() {
   return null;
 }
 
+const auth = getAuth();
+
 function App() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check the authentication state
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user); // Set user state to reflect auth state
+
+      if (user) {
+        if (user.email === "admin@wiseman.com") {
+          navigate("/bankAdmin"); // Redirect to Admin Page if admin
+        } else {
+          navigate("/bankDashboard"); // Redirect to User Dashboard
+        }
+      } else {
+        navigate("/"); // Redirect to Login page if user is not authenticated
+      }
+    });
+
+    return () => unsubscribe(); // Clean up the listener on component unmount
+  }, [navigate]);
   return (
     <Router>
       <BodyClassManager /> {/* Dynamically updates body class */}
