@@ -187,7 +187,7 @@ const Dashboard = () => {
   }, [userData]);
 
   return (
-    <div className="min-h-screen w-full bg-blue-900 text-white">
+    <div className="min-h-screen w-full text-white">
       {/* App Bar & Drawer */}
       <AppBar position="static" className="bg-blue-900">
         <Toolbar>

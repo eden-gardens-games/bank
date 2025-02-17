@@ -50,7 +50,6 @@ function App() {
           navigate(user.email === "admin@wiseman.com" ? "/bankAdmin" : "/bankDashboard");
         }
       } else {
-		console.log("Here");
         navigate("/");
       }
     });
@@ -62,8 +61,9 @@ function App() {
   useEffect(() => {
     if (user) {
       sessionStorage.setItem("lastPage", window.location.pathname);
+	  console.log("Here");
     }
-  }, [window.location.pathname, user]);
+  }, [window.location.pathname]);
 
   if (!isAuthChecked) {
     return <div>Loading...</div>; // Prevent rendering routes until auth check is complete
