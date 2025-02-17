@@ -1,344 +1,311 @@
+// AdminPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
-import { db, auth } from "../firebase"; // Adjust the path if needed
+import { db, auth } from "../firebase";
 
-// MUI Components
+// MUI & Tailwind hybrid components
 import { 
-  AppBar, Toolbar, Typography, Button, Paper, 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
-  FormControl, InputLabel, Select, MenuItem, TextField,
-  Drawer, IconButton, List, ListItem, ListItemText, Divider
+  AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemText, Divider,
+  Box, Button, FormControl, InputLabel, Select, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
-
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
+// Utility functions
+const getNextMonth = (dateStr) => {
+  let [month, year] = dateStr.split('/').map(Number);
+  return month === 12 ? `1/${year + 1}` : `${month + 1}/${year}`;
+};
+
+const getMonthDiff = (start, end) => {
+  let [sm, sy] = start.split('/').map(Number);
+  let [em, ey] = end.split('/').map(Number);
+  return (ey - sy) * 12 + (em - sm);
+};
+
+const getFirstOfMonth = (monthYear) => {
+  let [month, year] = monthYear.split('/').map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString('en-US');
+};
 
 const AdminPage = () => {
   const navigate = useNavigate();
-
-  // State for loan data
-  const [filtersOpen, setFiltersOpen] = useState(true);
-  const [yearError, setYearError] = useState("");
-  const [extensionError, setExtensionError] = useState("");
-  const [foreclosureError, setForeclosureError] = useState("");
-  const [loanData, setLoanData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-
-  // Filter state
-  const [filterYear, setFilterYear] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
-  const [filterExtension, setFilterExtension] = useState('');
-  const [filterForeclosure, setFilterForeclosure] = useState('');
-
-  // Drawer (Sidebar) state
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const toggleDrawer = (open) => (event) => {
+    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) return;
+    setDrawerOpen(open);
+  };
 
-  // Fetch data from Firestore on component mount
+  // Drawer content: links to AdminProfile, AdminUpdate, and AdminPayments
+  const drawerContent = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
+      <List>
+        <ListItem button onClick={() => navigate("/adminProfile")}>
+          <ListItemText primary="Profile" />
+        </ListItem>
+        <Divider />
+        <ListItem button onClick={() => navigate("/adminUpdate")}>
+          <ListItemText primary="Update Records" />
+        </ListItem>
+        <Divider />
+        <ListItem button onClick={() => navigate("/adminPayments")}>
+          <ListItemText primary="Approve Payments" />
+        </ListItem>
+      </List>
+    </Box>
+  );
+
+  // Processing state
+  const [processingDone, setProcessingDone] = useState(false);
+  const [adminData, setAdminData] = useState(null); // Admin document from 'bank'
+  const [userDocs, setUserDocs] = useState([]); // All documents from 'bank' except Admin
+
+  // For summary dropdown (years)
+  const [selectedYear, setSelectedYear] = useState(2025);
+
+  // Fetch and process documents from 'bank'
   useEffect(() => {
-    const fetchData = async () => {
+    const currentMonthYear = new Date().toLocaleDateString('en-US', { month: 'numeric', year: 'numeric' });
+    const fetchAndProcessDocs = async () => {
       try {
+        // Get Admin document
+        const adminDocRef = doc(db, "bank", "Admin");
+        const adminSnap = await getDoc(adminDocRef);
+        if (adminSnap.exists()) {
+          setAdminData(adminSnap.data());
+        }
+
+        // Get all user documents (exclude "Admin")
         const bankCollectionRef = collection(db, "bank");
         const snapshot = await getDocs(bankCollectionRef);
-        const loans = [];
-        
-        snapshot.forEach((docSnap) => {
-          // Ignore the "admin" document
-          if (docSnap.id === "admin") return;
-          
-          const data = docSnap.data();
-          // If user has a non-empty loans array, process each loan
-          if (data.loans && Array.isArray(data.loans) && data.loans.length > 0) {
-            data.loans.forEach((loan) => {
-              loans.push({
-                userName: `${data.firstName || ''} ${data.lastName || ''}`,
-                email: data.emailId || '',
-                loanDate: loan.loanDate, // Expecting a date string or timestamp
-				loanId: loan.loanId,
-                loanPrincipal: loan.loanPrincipal,
-                loanInterestRate: loan.loanInterestRate,
-                loanDuration: loan.loanDuration,
-                loanStatus: loan.loanStatus,
-                loanExtension: loan.loanExtension,
-                loanForeclosure: loan.loanForeclosure,
-              });
+        const processedDocs = [];
+
+        // Process each document (asynchronously, then wait briefly)
+        for (const docSnap of snapshot.docs) {
+          if (docSnap.id === "Admin") continue;
+          let data = docSnap.data();
+          // If lastUpdate is not current, process loan updates
+          if (data.lastUpdate !== currentMonthYear && data.loans && Array.isArray(data.loans)) {
+            let updatedLoans = data.loans.map(loan => {
+              if (loan.loanStatus === "Progress") {
+                const monthsDiff = getMonthDiff(data.lastUpdate, currentMonthYear);
+                let currMonth = data.lastUpdate;
+                for (let i = 0; i < monthsDiff; i++) {
+                  currMonth = getNextMonth(currMonth);
+                  loan.loanPayments = loan.loanPayments ? [...loan.loanPayments, loan.loanCurrEMI] : [loan.loanCurrEMI];
+                  loan.loanPayDays = loan.loanPayDays ? [...loan.loanPayDays, getFirstOfMonth(currMonth)] : [getFirstOfMonth(currMonth)];
+                  loan.loanPayStatus = loan.loanPayStatus ? [...loan.loanPayStatus, "Pending"] : ["Pending"];
+                  const interestPayment = (loan.loanCurrBal * loan.loanCurrInt / 1200);
+                  loan.loanPayInts = loan.loanPayInts ? [...loan.loanPayInts, interestPayment] : [interestPayment];
+                  // Update current balance and duration (simplified)
+                  loan.loanCurrBal = loan.loanCurrBal * (1 + (loan.loanCurrInt / 1200)) - loan.loanCurrEMI;
+                  loan.loanCurrDur = loan.loanCurrDur - 1;
+                  if (loan.loanCurrDur <= 0 || loan.loanCurrBal <= 0) {
+                    loan.loanStatus = "Closed";
+                    break;
+                  }
+                }
+              }
+              return loan;
+            });
+            // Update Firestore for the user
+            const userDocRef = doc(db, "bank", docSnap.id);
+            await updateDoc(userDocRef, {
+              loans: updatedLoans,
+              lastUpdate: currentMonthYear
+            });
+            data.loans = updatedLoans;
+            data.lastUpdate = currentMonthYear;
+          }
+          processedDocs.push({ id: docSnap.id, ...data });
+        }
+        // Wait a moment for async updates to finish
+        setTimeout(() => {
+          setUserDocs(processedDocs);
+          setProcessingDone(true);
+        }, 2000);
+      } catch (err) {
+        console.error("Error fetching or processing docs:", err);
+      }
+    };
+    fetchAndProcessDocs();
+  }, []);
+
+  // Calculate summary metrics from userDocs (for docs except Admin)
+  const calculateSummaryMetrics = () => {
+    let paidOff = 0, outstanding = 0, monthlyDeposit = 0, ytdInterest = 0, ytdPrincipal = 0;
+    userDocs.forEach(user => {
+      if (user.loans && Array.isArray(user.loans)) {
+        user.loans.forEach(loan => {
+          if (loan.loanStatus === "Progress") {
+            if (loan.loanPayments && Array.isArray(loan.loanPayments)) {
+              paidOff += loan.loanPayments.reduce((acc, curr) => acc + Number(curr), 0);
+            }
+            outstanding += Number(loan.loanCurrBal || 0);
+            monthlyDeposit += Number(loan.loanCurrEMI || 0);
+          }
+          // YTD calculations (for all loans, active and inactive)
+          if (loan.loanPayDays && loan.loanPayments && loan.loanPayInts && Array.isArray(loan.loanPayDays)) {
+            loan.loanPayDays.forEach((day, index) => {
+              const yearPart = new Date(day).getFullYear();
+              if (yearPart === Number(selectedYear)) {
+                ytdInterest += Number(loan.loanPayInts[index] || 0);
+                ytdPrincipal += Number(loan.loanPayments[index] || 0);
+              }
             });
           }
         });
-        setLoanData(loans);
-        setFilteredData(loans);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
       }
-    };
+    });
+    ytdPrincipal = ytdPrincipal - ytdInterest;
+    return { paidOff, outstanding, monthlyDeposit, ytdInterest, ytdPrincipal };
+  };
 
-    fetchData();
-  }, []);
+  const { paidOff, outstanding, monthlyDeposit, ytdInterest, ytdPrincipal } = calculateSummaryMetrics();
 
-  // Apply filters whenever filter state or loanData changes
-  useEffect(() => {
-    let data = [...loanData];
+  // Generate array of years for dropdown (2000 to 2100)
+  const years = [];
+  for (let y = 2000; y <= 2100; y++) {
+    years.push(y);
+  }
 
-    // Filter by Year (assumes loanDate is parseable as Date)
-    if (filterYear) {
-      data = data.filter((loan) => {
-        const loanYear = new Date(loan.loanDate).getFullYear();
-        return loanYear.toString() === filterYear;
+  // Build table data: Active loans from all userDocs
+  const activeLoans = [];
+  userDocs.forEach(user => {
+    if (user.loans && Array.isArray(user.loans)) {
+      user.loans.forEach(loan => {
+        if (loan.loanStatus === "Progress") {
+          activeLoans.push({
+            user: user.firstName,
+            loanId: loan.loanId,
+            loanAmount: loan.loanPrincipal,
+            paidOff: loan.loanPayments ? loan.loanPayments.reduce((acc, curr) => acc + Number(curr), 0) : 0,
+            balance: loan.loanCurrBal
+          });
+        }
       });
     }
-    // Filter by Loan Status
-    if (filterStatus) {
-      data = data.filter((loan) => loan.loanStatus === filterStatus);
-    }
-    // Filter by Loan Extension (months)
-    if (filterExtension) {
-      data = data.filter((loan) => loan.loanExtension == filterExtension);
-    }
-    // Filter by Loan Foreclosure (months)
-    if (filterForeclosure) {
-      data = data.filter((loan) => loan.loanForeclosure == filterForeclosure);
-    }
-    setFilteredData(data);
-  }, [filterYear, filterStatus, filterExtension, filterForeclosure, loanData]);
+  });
 
-  // Logout handler
+  // Logout handler for admin
   const handleLogout = async () => {
     await signOut(auth);
     navigate("/");
   };
 
-  // Navigate to Update Records page
-  const handleUpdateRecords = () => {
-    navigate("/bankAdminUpdate");
-  };
-  
-  const handleAdminHome = () => {
-    navigate("/bankAdmin");
-  };
-
-  // Toggle Drawer
-  const toggleDrawer = (open) => (event) => {
-    // Prevent toggling on tab or shift key press
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-    setDrawerOpen(open);
-  };
-
-  const drawerContent = (
-    <div
-      style={{ width: 250 }}
-      role="presentation"
-      onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
-    >
-      <List>
-        <ListItem button onClick={handleAdminHome}>
-          <ListItemText primary="Admin Home" />
-        </ListItem>
-        <Divider />
-		<ListItem button onClick={handleUpdateRecords}>
-          <ListItemText primary="Update Records" />
-        </ListItem>
-        <Divider />
-        <ListItem button onClick={handleLogout}>
-          <ListItemText primary="Logout" />
-        </ListItem>
-      </List>
-    </div>
-  );
+  if (!processingDone) {
+    return (
+      <div className="min-h-screen w-full bg-blue-900 text-white flex justify-center items-center">
+        <Typography variant="h5">Processing Data, please wait...</Typography>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-blue-900 text-white">
-      {/* Top Bar */}
+      {/* App Bar */}
       <AppBar position="static" className="bg-blue-900">
         <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={toggleDrawer(true)}
-          >
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Admin Dashboard
+            Wisemen Financials
           </Typography>
-          <Typography variant="body1" className="cursor-pointer mr-4" onClick={() => setFiltersOpen(!filtersOpen)}>
-            {filtersOpen ? "Hide Filters" : "Show Filters"} 
-          </Typography>
-          {/* Removed Update Records and Logout from top bar */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="body1" sx={{ mr: 1 }}>
+              Welcome, Admin!
+            </Typography>
+            <AccountCircleIcon />
+          </Box>
         </Toolbar>
       </AppBar>
-      
       {/* Drawer Sidebar */}
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={toggleDrawer(false)}
-      >
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         {drawerContent}
       </Drawer>
 
-      {/* Filters Section */}
-      {filtersOpen && (
-        <div className="min-h-[100px] p-6 flex flex-col md:flex-row gap-4 bg-yellow-400 text-white">
-          <FormControl variant="outlined" size="small" style={{ minWidth: 220 }}>
-            <TextField 
-              label="Year" 
-              value={filterYear} 
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val !== "" && (Number(val) < 1900 || Number(val) > 2200)) {
-                  setYearError("Year must be between 1900 and 2200");
-                } else {
-                  setYearError("");
-                }
-                setFilterYear(val);
-              }}
-              error={!!yearError}
-              helperText={yearError}
-              inputProps={{ min: 1900, max: 2200 }}
-              type="number"
-              InputLabelProps={{
-                sx: {
-                  '&:not(.MuiInputLabel-shrink)': {
-                    transform: 'translate(14px, 10px) scale(1)',
-                  },
-                },
-              }}
-              sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
-            />
-          </FormControl>
-          
-          <FormControl variant="outlined" size="small" style={{ minWidth: 180, height: 40 }}>
-            <InputLabel>Loan Status</InputLabel>
+      {/* Summary Box */}
+      <Box className="bg-yellow-400 p-4 my-4" sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+        <Box className="flex flex-col items-center m-2">
+          <Typography variant="subtitle1">Bank Balance</Typography>
+          <Typography variant="h6">${adminData ? Number(adminData.balance).toFixed(2) : '0.00'}</Typography>
+        </Box>
+        <Box className="flex flex-col items-center m-2">
+          <Typography variant="subtitle1">Paid-off Amount</Typography>
+          <Typography variant="h6">${paidOff.toFixed(2)}</Typography>
+        </Box>
+        <Box className="flex flex-col items-center m-2">
+          <Typography variant="subtitle1">Outstanding Balance</Typography>
+          <Typography variant="h6">${outstanding.toFixed(2)}</Typography>
+        </Box>
+        <Box className="flex flex-col items-center m-2">
+          <Typography variant="subtitle1">Monthly Deposit</Typography>
+          <Typography variant="h6">${monthlyDeposit.toFixed(2)}</Typography>
+        </Box>
+        <Box className="flex flex-col items-center m-2">
+          <FormControl variant="outlined" size="small" className="w-32">
+            <InputLabel>Year</InputLabel>
             <Select
-              label="Loan Status"
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
+              label="Year"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
             >
-              <MenuItem value=""><em>None</em></MenuItem>
-              <MenuItem value="Approved">Approved</MenuItem>
-              <MenuItem value="Progress">Progress</MenuItem>
-              <MenuItem value="Closed">Closed</MenuItem>
-			  <MenuItem value="Progress-Ext">Progress-Ext</MenuItem>
-			  <MenuItem value="Closed-Ext">Closed-Ext</MenuItem>
-			  <MenuItem value="Closed-FC">Closed-FC</MenuItem>
-			  <MenuItem value="Lost">Lost</MenuItem>
+              {years.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
+        </Box>
+        <Box className="flex flex-col items-center m-2">
+          <Typography variant="subtitle1">YTD Interest</Typography>
+          <Typography variant="h6">${ytdInterest.toFixed(2)}</Typography>
+        </Box>
+        <Box className="flex flex-col items-center m-2">
+          <Typography variant="subtitle1">YTD Principal</Typography>
+          <Typography variant="h6">${ytdPrincipal.toFixed(2)}</Typography>
+        </Box>
+      </Box>
 
-          <FormControl variant="outlined" size="small" style={{ minWidth: 180, height: 40 }}>
-            <TextField 
-              label="Loan Extension (months)" 
-              value={filterExtension} 
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val !== "" && Number(val) < 0) {
-                  setExtensionError("Value cannot be less than 0");
-                } else {
-                  setExtensionError("");
-                }
-                setFilterExtension(val);
-              }}
-              type="number"
-              error={!!extensionError}
-              helperText={extensionError}
-              inputProps={{ min: 0 }}
-              InputLabelProps={{
-                sx: {
-                  '&:not(.MuiInputLabel-shrink)': {
-                    transform: 'translate(14px, 10px) scale(1)',
-                  },
-                },
-              }}
-              sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
-            />
-          </FormControl>
-
-          <FormControl variant="outlined" size="small" style={{ minWidth: 180, height: 40 }}>
-            <TextField 
-              label="Loan Foreclosure (months)" 
-              value={filterForeclosure} 
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val !== "" && Number(val) < 0) {
-                  setForeclosureError("Value cannot be less than 0");
-                } else {
-                  setForeclosureError("");
-                }
-                setFilterForeclosure(val);
-              }}
-              type="number"
-              error={!!foreclosureError}
-              helperText={foreclosureError}
-              inputProps={{ min: 0 }}
-              InputLabelProps={{
-                sx: {
-                  '&:not(.MuiInputLabel-shrink)': {
-                    transform: 'translate(14px, 10px) scale(1)',
-                  },
-                },
-              }}
-              sx={{ height: 40, "& .MuiInputBase-root": { height: 40 } }} 
-            />
-          </FormControl>
-        </div>
-      )}
-
-      {/* Loans Table */}
-      <div className="p-4 text-white">
-        <Paper className="overflow-auto">
-          <TableContainer style={{ maxHeight: '70vh' }}>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <TableCell 
-                    style={{ 
-                      backgroundColor: '#1E3A8A',
-                      color: 'white',
-                      position: 'sticky', 
-                      left: 0, 
-                      zIndex: 2 
-                    }}
-                  >
-                    User Name
-                  </TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan ID</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Date</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Principal</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Interest Rate</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Duration</TableCell>
-                  <TableCell style={{ backgroundColor: '#1E3A8A', color: 'white' }}>Loan Status</TableCell>
+      {/* Active Loans Table */}
+      <Paper className="mx-auto my-4 p-4 bg-white text-black rounded" sx={{ maxWidth: 1000 }}>
+        <Typography variant="h6" className="mb-2">Active Loans</Typography>
+        <TableContainer sx={{ maxHeight: 400 }}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>User</TableCell>
+                <TableCell>Loan ID</TableCell>
+                <TableCell>Loan Amount</TableCell>
+                <TableCell>Paid-off Amount</TableCell>
+                <TableCell>Balance</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {activeLoans.map((loan, index) => (
+                <TableRow key={index} hover>
+                  <TableCell>{loan.user}</TableCell>
+                  <TableCell>{loan.loanId}</TableCell>
+                  <TableCell>${Number(loan.loanAmount).toFixed(2)}</TableCell>
+                  <TableCell>${Number(loan.paidOff).toFixed(2)}</TableCell>
+                  <TableCell>${Number(loan.balance).toFixed(2)}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredData.map((loan, index) => (
-                  <TableRow key={index} hover>
-                    <TableCell 
-                      style={{ 
-                        position: 'sticky', 
-                        left: 0, 
-                        backgroundColor: '#D4AF37' 
-                      }}
-                    >
-                      {loan.userName}
-                    </TableCell>
-                    <TableCell>{loan.loanId}</TableCell>
-                    <TableCell>{new Date(loan.loanDate).toLocaleDateString()}</TableCell>
-                    <TableCell>{loan.loanPrincipal}</TableCell>
-                    <TableCell>{loan.loanInterestRate}</TableCell>
-                    <TableCell>{loan.loanDuration}</TableCell>
-                    <TableCell>{loan.loanStatus}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </div>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      {/* + Add New Loan Button */}
+      <Box className="flex justify-center my-4">
+        <Button variant="contained" color="primary" onClick={() => navigate("/adminAddLoan")}>
+          + Add new loan
+        </Button>
+      </Box>
     </div>
   );
 };

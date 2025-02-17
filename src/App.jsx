@@ -4,6 +4,10 @@ import Auth from "./components/Auth";
 import AdminPage from "./components/AdminPage";
 import Dashboard from "./components/Dashboard";
 import AdminUpdate from "./components/AdminUpdate";
+import AdminAddLoan from "./components/AdminAddLoan";
+import AdminProfile from "./components/AdminProfile";
+import AdminPayments from "./components/AdminPayments";
+import CustomerProfile from "./components/CustomerProfile";
 
 function BodyClassManager() {
   const location = useLocation();
@@ -33,7 +37,12 @@ function App() {
         <Route path="/" element={<Auth />} />
         <Route path="/bankAdmin" element={<AdminPage />} />
         <Route path="/bankDashboard" element={<Dashboard />} />
-		<Route path="/bankAdminUpdate" element={<AdminUpdate />} />
+		<Route path="/adminUpdate" element={<AdminUpdate />} />
+		<Route path="/adminAddLoan" element={<AdminAddLoan />} />
+		<Route path="/adminProfile" element={<AdminProfile />} />
+		<Route path="/adminPayments" element={<AdminPayments />} />
+		<Route path="/custProfile" element={<CustomerProfile />} />
+		
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
