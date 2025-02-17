@@ -55,7 +55,7 @@ function App() {
     return () => unsubscribe(); // Clean up the listener on component unmount
   }, [navigate]);
   return (
-    <Router>
+    <div>
       <BodyClassManager /> {/* Dynamically updates body class */}
       <Routes>
         <Route path="/" element={<Auth />} />
@@ -69,7 +69,7 @@ function App() {
 		
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </Router>
+    </div>
   );
 }
 
