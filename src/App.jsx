@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase"; // Ensure you import auth from Firebase config
+import { auth } from "./firebase";
 import Auth from "./components/Auth";
 import AdminPage from "./components/AdminPage";
 import Dashboard from "./components/Dashboard";
@@ -35,6 +35,7 @@ function App() {
 
   // Run this only once when the app loads (not on every navigation)
   useEffect(() => {
+	console.log("test");
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setIsAuthChecked(true); // Mark authentication check as done
@@ -42,6 +43,7 @@ function App() {
       if (user) {
         // Retrieve last visited page from sessionStorage
         const lastPage = sessionStorage.getItem("lastPage");
+		console.log("here");
 
         if (lastPage) {
           navigate(lastPage);
