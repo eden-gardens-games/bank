@@ -1,6 +1,8 @@
-import { HashRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate, useLocation } from "react-router-dom";
+import { auth } from "./firebase"; // Ensure you import auth from Firebase config
 import Auth from "./components/Auth";
 import AdminPage from "./components/AdminPage";
 import Dashboard from "./components/Dashboard";
@@ -14,10 +16,7 @@ function BodyClassManager() {
   const location = useLocation();
 
   useEffect(() => {
-    // Reset body class
     document.body.className = "";
-    
-    // Assign different classes based on the route
     if (location.pathname === "/") {
       document.body.classList.add("auth-page");
     } else if (location.pathname === "/bankAdmin") {
@@ -30,43 +29,65 @@ function BodyClassManager() {
   return null;
 }
 
-const auth = getAuth();
-
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Track loading state
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // Check the authentication state
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user); // Set user state to reflect auth state
+      setUser(user);
+      setLoading(false); // Set loading to false once the auth state is checked
 
       if (user) {
-        if (user.email === "admin@wiseman.com") {
-          navigate("/bankAdmin"); // Redirect to Admin Page if admin
+        // Check if there was a page stored in sessionStorage
+        const returnUrl = sessionStorage.getItem("returnUrl");
+        
+        if (returnUrl) {
+          // Navigate back to the page the user was on before
+          sessionStorage.removeItem("returnUrl"); // Clean up session storage
+          navigate(returnUrl);
         } else {
-          navigate("/bankDashboard"); // Redirect to User Dashboard
+          // Default behavior: Redirect to user-specific page (either Admin or User)
+          if (user.email === "admin@wiseman.com") {
+            navigate("/bankAdmin");
+          } else {
+            navigate("/bankDashboard");
+          }
         }
       } else {
-        navigate("/"); // Redirect to Login page if user is not authenticated
+        // If user is not authenticated, redirect to login page
+        navigate("/");
       }
     });
 
-    return () => unsubscribe(); // Clean up the listener on component unmount
+    return () => unsubscribe();
   }, [navigate]);
+
+  useEffect(() => {
+    // Before redirecting, store the current URL in sessionStorage
+    if (user === null && location.pathname !== "/") {
+      sessionStorage.setItem("returnUrl", location.pathname);
+    }
+  }, [location, user]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Display loading state while checking auth
+  }
+
   return (
     <div>
-      <BodyClassManager /> {/* Dynamically updates body class */}
+      <BodyClassManager />
       <Routes>
         <Route path="/" element={<Auth />} />
         <Route path="/bankAdmin" element={<AdminPage />} />
         <Route path="/bankDashboard" element={<Dashboard />} />
-		<Route path="/adminUpdate" element={<AdminUpdate />} />
-		<Route path="/adminAddLoan" element={<AdminAddLoan />} />
-		<Route path="/adminProfile" element={<AdminProfile />} />
-		<Route path="/adminPayments" element={<AdminPayments />} />
-		<Route path="/custProfile" element={<CustomerProfile />} />
-		
+        <Route path="/adminUpdate" element={<AdminUpdate />} />
+        <Route path="/adminAddLoan" element={<AdminAddLoan />} />
+        <Route path="/adminProfile" element={<AdminProfile />} />
+        <Route path="/adminPayments" element={<AdminPayments />} />
+        <Route path="/custProfile" element={<CustomerProfile />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
