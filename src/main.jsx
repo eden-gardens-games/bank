@@ -1,11 +1,15 @@
-import { StrictMode } from 'react'
-import { ReactDOM } from 'react-dom/client'
 import './index.css'
-import { HashRouter as Router } from "react-router-dom"; 
-import App from './App.jsx'
+import React from "react";
+import ReactDOM from "react-dom/client"; // Use react-dom/client for React 18 and above
+import { HashRouter as Router } from "react-router-dom";
+import App from "./App";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const rootElement = document.getElementById("root");
+
+// React 18+ usage
+const root = ReactDOM.createRoot(rootElement);  // Create root using createRoot
+root.render(
   <Router>
     <App />
-  </Router>,
-)
+  </Router>
+);
