@@ -34,7 +34,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
-  @apply bg-custom-blue;
+  background-color: rgb(228 231 238);
 }
 
 .auth-page{

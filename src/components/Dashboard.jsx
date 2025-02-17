@@ -209,7 +209,7 @@ const Dashboard = () => {
       </Drawer>
 
       {/* Yellow Boxes Section */}
-      <Box className="bg-yellow-400 p-4 my-4" sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+      <Box className="bg-yellow-400 p-4" sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
         <Box className="flex items-center bg-white text-black p-2 m-1 rounded" sx={{ minWidth: 150 }}>
           {/* Icon placeholder */}
           <Box sx={{ mr: 1 }}>💸</Box>
