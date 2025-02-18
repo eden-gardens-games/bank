@@ -228,11 +228,11 @@ const Dashboard = () => {
 				height: "100%"
 			}}>
 				<Box sx={{ fontSize: "2.5rem" }}>💸</Box>
-				<Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
+				<Typography variant="h6" sx={{ fontSize: "1rem" }}>
 					Payment Due
 				</Typography>
 			</Box>
-
+			<Box></Box>
 			{/* Right side container */}
 			<Box sx={{ 
 				display: "flex",
@@ -241,8 +241,8 @@ const Dashboard = () => {
 				alignItems: "flex-end",
 				height: "100%"
 			}}>
-				<Typography variant="h5" sx={{ fontSize: "1.5rem" }}>
-					${paymentDue.toFixed(2)}
+				<Typography variant="h5" sx={{ fontSize: "1.25rem" }}>
+					Amount: ${paymentDue.toFixed(2)}
 				</Typography>
 				<Typography variant="body1" sx={{ fontSize: "1rem" }}>
 					Due: {dueDate}
