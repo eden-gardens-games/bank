@@ -215,36 +215,77 @@ const Dashboard = () => {
 			sx={{ 
 				minWidth: 225,
 				border: "2px solid black",
-				display: "flex", 
-				flexDirection: "row", 
-				alignItems: "center", 
-				justifyContent: "space-between"
+				display: "flex",
+				justifyContent: "space-between",
+				alignItems: "stretch" // Makes both sides take full height
 			}}
 		>
-		  <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexDirection: "column" }}>
-			<Box sx={{ fontSize: "3rem" }}>💸</Box>
-			<Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
-			  Payment Due
-			</Typography>
-		  </Box>	
+			{/* Left side container */}
+			<Box sx={{ 
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "space-between",
+				height: "100%"
+			}}>
+				<Box sx={{ fontSize: "2.5rem" }}>💸</Box>
+				<Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
+					Payment Due
+				</Typography>
+			</Box>
 
-		  {/* Right side: Amount and Due Date */}
-		  <Box sx={{ textAlign: "right" }}>
-			<Typography variant="h5" sx={{ fontSize: "1.5rem" }}>
-			  Amount: ${paymentDue.toFixed(2)}
-			</Typography>
-			<Typography variant="body1" sx={{ fontSize: "1rem" }}>
-			  Due: {dueDate}
-			</Typography>
-		  </Box>
-        </Box>
-        <Box className="flex items-center bg-white text-black p-2 m-1 rounded" sx={{ minWidth: 150 }}>
-          <Box sx={{ mr: 1 }}>💰</Box>
-          <Box>
-            <Typography variant="subtitle1">Total Loan</Typography>
-            <Typography variant="body2">${totalLoan.toFixed(2)}</Typography>
-          </Box>
-        </Box>
+			{/* Right side container */}
+			<Box sx={{ 
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "space-between",
+				alignItems: "flex-end",
+				height: "100%"
+			}}>
+				<Typography variant="h5" sx={{ fontSize: "1.5rem" }}>
+					${paymentDue.toFixed(2)}
+				</Typography>
+				<Typography variant="body1" sx={{ fontSize: "1rem" }}>
+					Due: {dueDate}
+				</Typography>
+			</Box>
+		</Box>
+		<Box 
+			className="bg-white text-black p-4 m-2 rounded" 
+			sx={{ 
+				minWidth: 225,
+				border: "2px solid black",
+				display: "flex",
+				justifyContent: "space-between",
+				alignItems: "stretch" // Makes both sides take full height
+			}}
+		>
+			{/* Left side container */}
+			<Box sx={{ 
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "space-between",
+				height: "100%"
+			}}>
+				<Box sx={{ fontSize: "2.5rem" }}>💰</Box>
+				<Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
+					Total Loan
+				</Typography>
+			</Box>
+
+			{/* Right side container */}
+			<Box sx={{ 
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "space-between",
+				alignItems: "flex-end",
+				height: "100%"
+			}}>
+				<Typography variant="h5" sx={{ fontSize: "1.5rem" }}>
+					${totalLoan.toFixed(2)}
+				</Typography>
+			</Box>
+		</Box>
+        
         <Box className="flex items-center bg-white text-black p-2 m-1 rounded" sx={{ minWidth: 150 }}>
           <Box sx={{ mr: 1 }}>🏦</Box>
           <Box>
