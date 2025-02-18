@@ -32,7 +32,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [isAuthChecked, setIsAuthChecked] = useState(false); // Track initial auth check
   const navigate = useNavigate();
-
+  const location = useLocation();
   // Run this only once when the app loads (not on every navigation)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -60,10 +60,9 @@ function App() {
   // Save the last visited page whenever the user navigates
   useEffect(() => {
     if (user) {
-      sessionStorage.setItem("lastPage", window.location.pathname);
-	  console.log("Here");
+      sessionStorage.setItem("lastPage", location.pathname);
     }
-  }, [window.location.pathname]);
+  }, [location]);
 
   if (!isAuthChecked) {
     return <div>Loading...</div>; // Prevent rendering routes until auth check is complete
