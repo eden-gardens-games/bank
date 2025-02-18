@@ -213,7 +213,7 @@ const Dashboard = () => {
         <Box 
 			className="bg-white text-black p-4 m-2 rounded" 
 			sx={{ 
-				minWidth: 225,
+				minWidth: 200,
 				border: "2px solid black",
 				display: "flex",
 				justifyContent: "space-between",
@@ -227,8 +227,8 @@ const Dashboard = () => {
 				justifyContent: "space-between",
 				height: "100%"
 			}}>
-				<Box sx={{ fontSize: "2.5rem" }}>💸</Box>
-				<Typography variant="h6" sx={{ fontSize: "1rem" }}>
+				<Box sx={{ fontSize: "2rem" }}>💸</Box>
+				<Typography variant="h6" sx={{ fontSize: "0.75rem" }}>
 					Payment Due
 				</Typography>
 			</Box>
@@ -237,14 +237,14 @@ const Dashboard = () => {
 			<Box sx={{ 
 				display: "flex",
 				flexDirection: "column",
-				justifyContent: "space-between",
+				justifyContent: "center",
 				alignItems: "flex-end",
 				height: "100%"
 			}}>
 				<Typography variant="h5" sx={{ fontSize: "1.25rem" }}>
 					Amount: ${paymentDue.toFixed(2)}
 				</Typography>
-				<Typography variant="body1" sx={{ fontSize: "1rem" }}>
+				<Typography variant="body1" sx={{ fontSize: "0.75rem" }}>
 					Due: {dueDate}
 				</Typography>
 			</Box>
