@@ -209,14 +209,26 @@ const Dashboard = () => {
       </Drawer>
 
       {/* Yellow Boxes Section */}
-      <Box className="bg-yellow-400 p-4" sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
-        <Box className="flex items-center bg-white text-black p-2 m-1 rounded" sx={{ minWidth: 150 }}>
+      <Box className="p-4" sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+        <Box 
+			className="bg-white text-black p-4 m-2 rounded" 
+			sx={{ 
+				minWidth: 200,
+				border: "2px solid black",
+				display: "flex", 
+				flexDirection: "column", 
+				alignItems: "center", 
+				justifyContent: "center"
+			}}
+		>
           {/* Icon placeholder */}
-          <Box sx={{ mr: 1 }}>💸</Box>
+          <Box sx={{ fontSize: "3rem", mb: 1 }}>💸</Box>
+		  <Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
+			Payment Due
+		  </Typography>
           <Box>
-            <Typography variant="subtitle1">Payment Due</Typography>
-            <Typography variant="body2">${paymentDue.toFixed(2)}</Typography>
-            <Typography variant="body2">Due: {dueDate}</Typography>
+            <Typography variant="h5" sx={{ fontSize: "1.5rem" }}>Amount: ${paymentDue.toFixed(2)}</Typography>
+            <Typography variant="body1" sx={{ fontSize: "1rem" }}>Due: {dueDate}</Typography>
           </Box>
         </Box>
         <Box className="flex items-center bg-white text-black p-2 m-1 rounded" sx={{ minWidth: 150 }}>
