@@ -213,7 +213,7 @@ const Dashboard = () => {
         <Box 
 			className="bg-white text-black p-4 m-2 rounded" 
 			sx={{ 
-				minWidth: 200,
+				minWidth: 225,
 				border: "2px solid black",
 				display: "flex", 
 				flexDirection: "column", 
@@ -221,15 +221,20 @@ const Dashboard = () => {
 				justifyContent: "center"
 			}}
 		>
-          {/* Icon placeholder */}
-          <Box sx={{ fontSize: "3rem", mb: 1 }}>💸</Box>
-		  <Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
-			Payment Due
-		  </Typography>
-          <Box>
-            <Typography variant="h5" sx={{ fontSize: "1.5rem" }}>Amount: ${paymentDue.toFixed(2)}</Typography>
-            <Typography variant="body1" sx={{ fontSize: "1rem" }}>Due: {dueDate}</Typography>
-          </Box>
+		  <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mr: 2 }}>
+			<Box sx={{ fontSize: "3rem", mb: 1 }}>💸</Box>
+			<Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
+			  Payment Due
+			</Typography>
+		  </Box>
+		  <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+			<Typography variant="h5" sx={{ fontSize: "1.5rem" }}>
+			  ${paymentDue.toFixed(2)}
+			</Typography>
+			<Typography variant="body1" sx={{ fontSize: "1rem" }}>
+			  Due: {dueDate}
+			</Typography>
+		  </Box>
         </Box>
         <Box className="flex items-center bg-white text-black p-2 m-1 rounded" sx={{ minWidth: 150 }}>
           <Box sx={{ mr: 1 }}>💰</Box>
