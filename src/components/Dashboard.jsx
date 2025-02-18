@@ -221,17 +221,17 @@ const Dashboard = () => {
 				justifyContent: "space-between"
 			}}
 		>
-		  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+		  <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexDirection: "column" }}>
 			<Box sx={{ fontSize: "3rem" }}>💸</Box>
 			<Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
 			  Payment Due
 			</Typography>
-		  </Box>
+		  </Box>	
 
 		  {/* Right side: Amount and Due Date */}
 		  <Box sx={{ textAlign: "right" }}>
 			<Typography variant="h5" sx={{ fontSize: "1.5rem" }}>
-			  ${paymentDue.toFixed(2)}
+			  Amount: ${paymentDue.toFixed(2)}
 			</Typography>
 			<Typography variant="body1" sx={{ fontSize: "1rem" }}>
 			  Due: {dueDate}
