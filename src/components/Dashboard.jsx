@@ -216,7 +216,7 @@ const Dashboard = () => {
 				minWidth: 225,
 				border: "2px solid black",
 				display: "flex", 
-				flexDirection: "column", 
+				flexDirection: "row", 
 				alignItems: "center", 
 				justifyContent: "space-between"
 			}}
