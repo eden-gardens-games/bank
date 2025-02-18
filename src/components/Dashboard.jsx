@@ -227,7 +227,7 @@ const Dashboard = () => {
 				justifyContent: "center",
 				height: "100%"
 			}}>
-				<Box sx={{ fontSize: "2rem", text-align: "center" }}>💸</Box>
+				<Box sx={{ fontSize: "2rem", textAlign: 'center'}}>💸</Box>
 				<Typography variant="h6" sx={{ fontSize: "0.75rem" }}>
 					Payment Due
 				</Typography>
