@@ -224,10 +224,10 @@ const Dashboard = () => {
 			<Box sx={{ 
 				display: "flex",
 				flexDirection: "column",
-				justifyContent: "space-between",
+				justifyContent: "center",
 				height: "100%"
 			}}>
-				<Box sx={{ fontSize: "2rem" }}>💸</Box>
+				<Box sx={{ fontSize: "2rem", text-align: "center" }}>💸</Box>
 				<Typography variant="h6" sx={{ fontSize: "0.75rem" }}>
 					Payment Due
 				</Typography>
